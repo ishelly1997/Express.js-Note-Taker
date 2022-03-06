@@ -2,22 +2,18 @@ const express = require('express');
 const res = require('express/lib/response');
 const uuid = require('uuid');
 const path = require('path');
-
-const {notes} = require('./db/db.json')
+const {notes} = require('./db/db.json');
 const PORT = process.env.PORT || 3001;
 const app = express();
-app.use(express.json())
-app.use(express.urlencoded({extended:true}))
-app.use(express.static('public'))
+app.use(express.json());
+app.use(express.urlencoded({extended:true}));
+app.use(express.static('public'));
 
 app.get('/api/notes', (req, res) => {
-  let results = notes;
-  console.log(req.query)
-  res.json(results);
+  res.sendFile(path.join(__dirname, './db/db.json'))
 });
-app.post('/api/notes', (req, res) => {
-  console.info(`${req.method} Note Taken`);
 
+app.post('/api/notes', (req, res) => {
   const { title, text } = req.body;
 
   if (title && text) {
@@ -27,10 +23,7 @@ app.post('/api/notes', (req, res) => {
       text,
       note_id: uuid(),
     };
-
-
     const noteString = JSON.stringify(newNote);
-
     // Write the string to a file
     fs.writeFile(`./db/db.json`, noteString, (err) =>
       err
@@ -39,12 +32,10 @@ app.post('/api/notes', (req, res) => {
             `Note ${newNote.title} has been written to JSON file`
           )
     );
-
     const response = {
       status: 'success',
       body: newNote,
     };
-
     console.log(response);
     res.json(response);
   } else {
@@ -61,5 +52,5 @@ app.get('/notes', (req, res) => {
 })
 
 app.listen(PORT, () => {
-    console.log(`API server now on port ${PORT}!`);
+    console.log(`App server now on port ${PORT}!`);
 });
