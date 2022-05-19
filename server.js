@@ -10,8 +10,8 @@ const PORT = process.env.PORT || 3001;
 const app = express();
 const fs = require('fs');
 const util = require('util');
-const readFileAsync = util.promisify(fs.readFile);
-const writeFileAsync = util.promisify(fs.writeFile);
+//const readFileAsync = util.promisify(fs.readFile);
+//const writeFileAsync = util.promisify(fs.writeFile);
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(express.static('public'));
@@ -44,7 +44,7 @@ app.post('/api/notes', (req, res) => {
   console.log(req);
   const notes = JSON.parse(fs.readFileSync('./db/db.json'));
   const newNotes = req.body;
-  newNotes.id = uuid.v4();
+  newNotes.id = uuid();
   notes.push(newNotes);
   console.log(notes);
   fs.writeFileSync('./db/db.json', JSON.stringify(notes))
